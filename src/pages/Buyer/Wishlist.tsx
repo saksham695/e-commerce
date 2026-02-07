@@ -15,6 +15,7 @@ const Wishlist: React.FC = () => {
 
   useEffect(() => {
     loadWishlistProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wishlist]);
 
   const loadWishlistProducts = () => {

@@ -25,6 +25,7 @@ const SellerDashboard: React.FC = () => {
   useEffect(() => {
     trackEvent(EventType.VIEW_SELLER_DASHBOARD);
     loadProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadProducts = () => {

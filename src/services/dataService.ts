@@ -41,7 +41,6 @@ class DataService {
   }
 
   private generateMockProducts(): Product[] {
-    const categories = Object.values(ProductCategory);
     const products: Product[] = [];
 
     const productTemplates = [

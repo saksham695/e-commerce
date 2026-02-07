@@ -30,10 +30,12 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     trackEvent(EventType.VIEW_ADMIN_DASHBOARD);
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events]);
 
   const loadData = () => {

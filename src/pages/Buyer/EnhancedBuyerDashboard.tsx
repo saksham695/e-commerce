@@ -35,6 +35,7 @@ const EnhancedBuyerDashboard: React.FC = () => {
     trackEvent(EventType.BROWSE_PRODUCTS);
     loadProducts();
     updateCartCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadProducts = async () => {

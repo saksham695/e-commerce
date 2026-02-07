@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Product } from '../types/interfaces';
 import { useAuth } from '../contexts/AuthContext';
 
 /**

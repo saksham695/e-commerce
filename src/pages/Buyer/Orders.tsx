@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEvents } from '../../contexts/EventContext';
 import { Order } from '../../types/interfaces';
-import { EventType } from '../../types/enums';
+import { EventType, OrderStatus } from '../../types/enums';
 import { dataService } from '../../services/dataService';
 import './Orders.css';
 
@@ -18,6 +18,7 @@ const Orders: React.FC = () => {
   useEffect(() => {
     trackEvent(EventType.VIEW_ORDERS);
     loadOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadOrders = () => {
@@ -30,15 +31,16 @@ const Orders: React.FC = () => {
     setLoading(false);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: OrderStatus) => {
     switch (status) {
-      case 'completed':
+      case OrderStatus.DELIVERED:
         return 'status-completed';
-      case 'processing':
+      case OrderStatus.CONFIRMED:
+      case OrderStatus.SHIPPED:
         return 'status-processing';
-      case 'pending':
+      case OrderStatus.PENDING:
         return 'status-pending';
-      case 'cancelled':
+      case OrderStatus.CANCELLED:
         return 'status-cancelled';
       default:
         return '';
@@ -103,11 +105,11 @@ const Orders: React.FC = () => {
 
                 <div className="order-items">
                   {order.items.map((item) => {
-                    const product = dataService.getProductById(item.productId);
+                    const product = item.product;
                     if (!product) return null;
 
                     return (
-                      <div key={item.productId} className="order-item">
+                      <div key={product.id} className="order-item">
                         <img 
                           src={product.images[0]} 
                           alt={product.name}
@@ -119,7 +121,7 @@ const Orders: React.FC = () => {
                           <p className="order-item-quantity">Qty: {item.quantity}</p>
                         </div>
                         <div className="order-item-price">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          ${(product.price * item.quantity).toFixed(2)}
                         </div>
                       </div>
                     );
@@ -131,7 +133,7 @@ const Orders: React.FC = () => {
                     <span className="order-total-label">Total:</span>
                     <span className="order-total-amount">${order.totalAmount.toFixed(2)}</span>
                   </div>
-                  {order.status === 'processing' && (
+                  {(order.status === OrderStatus.CONFIRMED || order.status === OrderStatus.SHIPPED) && (
                     <button className="track-order-btn">Track Order</button>
                   )}
                 </div>

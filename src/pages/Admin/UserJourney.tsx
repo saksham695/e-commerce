@@ -32,6 +32,7 @@ const UserJourney: React.FC = () => {
     if (userId) {
       loadUserData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, events]);
 
   const loadUserData = () => {

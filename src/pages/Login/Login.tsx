@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useEvents } from '../../contexts/EventContext';
-import { UserRole, EventType } from '../../types/enums';
+import { UserRole } from '../../types/enums';
 import './Login.css';
 
 const Login: React.FC = () => {
@@ -13,7 +12,6 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
 
   const { login } = useAuth();
-  const { trackEvent } = useEvents();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {

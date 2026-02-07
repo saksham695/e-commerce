@@ -5,7 +5,6 @@ import { EventProvider, useEvents } from './contexts/EventContext';
 import { UserRole, EventType } from './types/enums';
 import ProtectedRoute from './components/ProtectedRoute';
 import ToastContainer from './components/Toast/Toast';
-import Skeleton from './components/Skeleton/Skeleton';
 
 import './App.css';
 
@@ -36,6 +35,7 @@ const AppContent: React.FC = () => {
     if (isAuthenticated && user) {
       trackEvent(EventType.LOGIN);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, user]);
 
   return (

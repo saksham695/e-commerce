@@ -3,7 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useEvents } from '../../contexts/EventContext';
 import { ProductCategory, ProductStatus, EventType } from '../../types/enums';
-import { Product } from '../../types/interfaces';
 import { dataService } from '../../services/dataService';
 import './ProductForm.css';
 
