@@ -16,7 +16,7 @@ const Orders: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    trackEvent(EventType.VIEW_CART); // Reusing cart event for orders view
+    trackEvent(EventType.VIEW_ORDERS);
     loadOrders();
   }, []);
 
