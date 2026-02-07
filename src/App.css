@@ -35,8 +35,8 @@ button {
 }
 
 .back-button:hover {
-  border-color: #667eea;
-  color: #667eea;
+  border-color: var(--secondary-500);
+  color: var(--secondary-600);
 }
 
 /* Common Header Styles */
@@ -85,7 +85,7 @@ button {
 
 .logout-button:hover {
   background-color: white;
-  color: #667eea;
+  color: var(--primary-800);
 }
 
 /* Scrollbar Customization */

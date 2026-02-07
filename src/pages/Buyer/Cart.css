@@ -47,19 +47,20 @@
 
 .browse-btn {
   padding: 14px 30px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-secondary);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: var(--shadow);
 }
 
 .browse-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .cart-content {
@@ -108,7 +109,7 @@
 
 .cart-item-brand {
   font-size: 14px;
-  color: #667eea;
+  color: var(--secondary-600);
   font-weight: 500;
   margin: 0;
 }
@@ -116,7 +117,7 @@
 .cart-item-price {
   font-size: 20px;
   font-weight: 700;
-  color: #667eea;
+  color: var(--primary-800);
   margin: 0;
 }
 
@@ -149,7 +150,7 @@
 }
 
 .quantity-controls-cart button:hover {
-  background-color: #667eea;
+  background: var(--gradient-secondary);
   color: white;
 }
 
@@ -228,7 +229,7 @@
 }
 
 .total-price {
-  color: #667eea;
+  color: var(--primary-800);
   font-size: 28px;
 }
 
@@ -246,19 +247,20 @@
 }
 
 .checkout-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-secondary);
   color: white;
+  box-shadow: var(--shadow);
 }
 
 .checkout-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .continue-shopping-btn {
   background-color: white;
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: var(--secondary-600);
+  border: 2px solid var(--secondary-500);
 }
 
 .continue-shopping-btn:hover {
@@ -347,7 +349,7 @@
 
 .checkout-item-price {
   font-weight: 700;
-  color: #667eea;
+  color: var(--primary-800);
   font-size: 16px;
 }
 
@@ -371,19 +373,20 @@
 .complete-purchase-btn {
   width: 100%;
   padding: 18px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-accent);
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 18px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: var(--shadow);
 }
 
 .complete-purchase-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-xl);
 }
 
 /* Responsive Design */

@@ -79,8 +79,8 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #f5576c;
-  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .form-group input.error,
@@ -123,8 +123,8 @@
 
 .image-input:focus {
   outline: none;
-  border-color: #f5576c;
-  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .spec-key-input,
@@ -147,8 +147,8 @@
 .spec-key-input:focus,
 .spec-value-input:focus {
   outline: none;
-  border-color: #f5576c;
-  box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+  border-color: var(--accent-500);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 .remove-btn-small {
@@ -173,8 +173,8 @@
 .add-field-btn {
   padding: 10px 20px;
   background-color: white;
-  color: #f5576c;
-  border: 2px dashed #f5576c;
+  color: var(--accent-600);
+  border: 2px dashed var(--accent-500);
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -184,7 +184,8 @@
 }
 
 .add-field-btn:hover {
-  background-color: #fff5f7;
+  background-color: var(--success-100);
+  border-color: var(--accent-600);
 }
 
 .form-actions {
@@ -216,13 +217,14 @@
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--gradient-accent);
   color: white;
+  box-shadow: var(--shadow);
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .submit-btn:disabled {

@@ -46,8 +46,9 @@
   justify-content: center;
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--gradient-accent);
   border-radius: 15px;
+  box-shadow: var(--shadow);
 }
 
 .stat-info {

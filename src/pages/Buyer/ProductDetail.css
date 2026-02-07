@@ -86,13 +86,14 @@
 
 .product-category-badge {
   display: inline-block;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: white;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
   width: fit-content;
+  box-shadow: var(--shadow-sm);
 }
 
 .product-title {
@@ -104,7 +105,7 @@
 
 .product-brand-detail {
   font-size: 16px;
-  color: #667eea;
+  color: var(--secondary-600);
   font-weight: 600;
   margin: 0;
 }
@@ -112,7 +113,7 @@
 .product-price-detail {
   font-size: 36px;
   font-weight: 700;
-  color: #667eea;
+  color: var(--primary-800);
 }
 
 .product-stock-info {
@@ -226,7 +227,7 @@
 }
 
 .quantity-controls button:hover:not(:disabled) {
-  background-color: #667eea;
+  background: var(--gradient-secondary);
   color: white;
 }
 
@@ -254,13 +255,14 @@
 }
 
 .add-to-cart-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-secondary);
   color: white;
+  box-shadow: var(--shadow);
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-lg);
 }
 
 .add-to-cart-btn:disabled {
@@ -270,13 +272,14 @@
 
 .go-to-cart-btn {
   background-color: white;
-  color: #667eea;
-  border: 2px solid #667eea;
+  color: var(--secondary-600);
+  border: 2px solid var(--secondary-500);
 }
 
 .go-to-cart-btn:hover {
-  background-color: #667eea;
+  background: var(--gradient-secondary);
   color: white;
+  border-color: transparent;
 }
 
 .success-message {

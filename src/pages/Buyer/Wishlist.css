@@ -130,12 +130,12 @@
 }
 
 .wishlist-product-name:hover {
-  color: #667eea;
+  color: var(--secondary-600);
 }
 
 .wishlist-product-brand {
   font-size: 14px;
-  color: #667eea;
+  color: var(--secondary-600);
   margin: 0 0 12px 0;
   font-weight: 500;
 }
@@ -163,12 +163,12 @@
 .wishlist-price {
   font-size: 24px;
   font-weight: 700;
-  color: #667eea;
+  color: var(--primary-800);
 }
 
 .view-product-btn {
   padding: 10px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-secondary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -176,11 +176,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 14px;
+  box-shadow: var(--shadow-sm);
 }
 
 .view-product-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-md);
 }
 
 @media (max-width: 768px) {
