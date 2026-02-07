@@ -1,46 +1,272 @@
-# Getting Started with Create React App
+# 🛍️ E-Commerce Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-featured, production-ready e-commerce platform with role-based access control, built with React, TypeScript, and modern web technologies.
 
-## Available Scripts
+## 🌟 Features
 
-In the project directory, you can run:
+### 🔐 **Role-Based Authentication**
+- **Three distinct user roles**: Admin, Seller, and Buyer
+- Secure login with role selection
+- Protected routes based on user permissions
+- Persistent authentication using localStorage
 
-### `npm start`
+### 👤 **User Panels**
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### **Buyer Panel** 🛒
+- Browse all available products
+- Filter by category and search
+- View detailed product information
+- Add products to cart with quantity selection
+- Shopping cart management
+- Checkout with order placement
+- Real-time cart count tracking
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### **Seller Panel** 📦
+- Dashboard with product statistics
+- Create new products with comprehensive forms
+- Edit existing products
+- Delete products
+- View all seller's products in table format
+- Track product status and inventory
 
-### `npm test`
+#### **Admin Panel** 🎯
+- Complete dashboard with system metrics
+- View all sellers and buyers
+- Track total products, orders, and events
+- Recent activity feed
+- User journey visualization with React Flow
+- Click on any user to view their complete journey
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 📊 **Event Tracking System**
+- Tracks all user actions throughout the platform
+- Events include:
+  - Authentication (login/logout)
+  - Product browsing and viewing
+  - Cart operations
+  - Purchases
+  - Product management (CRUD operations)
+  - Dashboard visits
+- Real-time event logging
+- Persistent storage for analytics
 
-### `npm run build`
+### 🗺️ **User Journey Visualization**
+- Interactive React Flow diagrams
+- Visual representation of user actions over time
+- Color-coded events by type
+- Detailed event information on click
+- Minimap for easy navigation
+- Animated flow connections
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Tech Stack
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Frontend**: React 18.2.0
+- **Language**: TypeScript 4.9.5
+- **Routing**: React Router DOM 6.x
+- **Visualization**: React Flow
+- **Styling**: CSS3 (Custom, no frameworks)
+- **State Management**: React Context API
+- **Build Tool**: Create React App
+- **Version Control**: Git
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 📁 Project Structure
 
-### `npm run eject`
+```
+e-commerce/
+├── src/
+│   ├── components/
+│   │   └── ProtectedRoute.tsx        # Route protection
+│   ├── contexts/
+│   │   ├── AuthContext.tsx           # Authentication state
+│   │   └── EventContext.tsx          # Event tracking
+│   ├── pages/
+│   │   ├── Admin/
+│   │   │   ├── AdminDashboard.tsx    # Admin dashboard
+│   │   │   └── UserJourney.tsx       # Journey visualization
+│   │   ├── Buyer/
+│   │   │   ├── BuyerDashboard.tsx    # Product listing
+│   │   │   ├── ProductDetail.tsx     # Product details
+│   │   │   └── Cart.tsx              # Shopping cart
+│   │   ├── Seller/
+│   │   │   ├── SellerDashboard.tsx   # Seller dashboard
+│   │   │   └── ProductForm.tsx       # Product CRUD
+│   │   └── Login/
+│   │       └── Login.tsx             # Login page
+│   ├── services/
+│   │   └── dataService.ts            # Data management
+│   ├── types/
+│   │   ├── enums.ts                  # TypeScript enums
+│   │   └── interfaces.ts             # TypeScript interfaces
+│   ├── App.tsx                       # Main app component
+│   └── index.tsx                     # Entry point
+├── public/
+├── package.json
+└── tsconfig.json
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 🎯 User Roles & Enums
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### UserRole Enum
+```typescript
+enum UserRole {
+  ADMIN = 'admin',
+  SELLER_USER = 'seller_user',
+  BUYER_USER = 'buyer_user',
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### EventType Enum
+```typescript
+enum EventType {
+  LOGIN, LOGOUT,
+  BROWSE_PRODUCTS, VIEW_PRODUCT_DETAILS,
+  ADD_TO_CART, REMOVE_FROM_CART,
+  PROCEED_TO_CHECKOUT, COMPLETE_PURCHASE,
+  CREATE_PRODUCT, EDIT_PRODUCT, DELETE_PRODUCT,
+  VIEW_ADMIN_DASHBOARD, VIEW_SELLERS_LIST,
+  VIEW_BUYERS_LIST, VIEW_USER_JOURNEY, VIEW_METRICS,
+  // ... and more
+}
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### ProductCategory Enum
+```typescript
+enum ProductCategory {
+  ELECTRONICS, CLOTHING, FOOD,
+  HOME, BOOKS, SPORTS, TOYS,
+  BEAUTY, AUTOMOTIVE, OTHER
+}
+```
 
-## Learn More
+## 🛠️ Installation & Setup
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Installation Steps
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/saksham695/e-commerce.git
+cd e-commerce
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Start the development server**
+```bash
+npm start
+```
+
+The application will open at `http://localhost:3000`
+
+### Available Scripts
+
+```bash
+npm start       # Start development server
+npm build       # Build for production
+npm test        # Run tests
+npm eject       # Eject from CRA (one-way operation)
+```
+
+## 👥 Demo Credentials
+
+### Login as Admin
+- **Email**: admin@ecommerce.com
+- **Password**: Any password (6+ characters)
+- **Role**: Select "Admin" from dropdown
+
+### Login as Seller
+- **Email**: seller@example.com
+- **Password**: Any password (6+ characters)
+- **Role**: Select "Seller" from dropdown
+
+### Login as Buyer
+- **Email**: buyer@example.com
+- **Password**: Any password (6+ characters)
+- **Role**: Select "Buyer" from dropdown
+
+## 💡 Key Features Explained
+
+### Product Management (Seller)
+Sellers can create products with comprehensive details:
+- **Basic Info**: Name, description, brand, category
+- **Pricing**: Price and stock quantity
+- **Media**: Multiple product images (URLs)
+- **Specifications**: Custom key-value pairs
+- **Additional Details**: Weight, dimensions, warranty, return policy
+- **Status**: Active, inactive, or out of stock
+
+### Event Tracking
+Every user action is tracked and stored:
+- Automatically captures user ID, name, and role
+- Timestamps for all events
+- Optional metadata for additional context
+- Accessible to admin for analytics
+
+### Journey Visualization
+Admin can view any user's complete journey:
+- Visual flow diagram using React Flow
+- Events displayed chronologically
+- Color-coded by event type
+- Interactive nodes with detailed information
+- Minimap for navigation
+
+## 🎨 Design Philosophy
+
+- **Modern UI**: Gradient backgrounds, smooth transitions, card-based layouts
+- **Responsive**: Works seamlessly on desktop, tablet, and mobile
+- **Intuitive**: Clear navigation and user-friendly interfaces
+- **Consistent**: Unified design language across all panels
+- **Accessible**: Proper contrast, readable fonts, clear CTAs
+
+## 🔒 Security Features
+
+- Role-based access control (RBAC)
+- Protected routes preventing unauthorized access
+- Input validation on all forms
+- Type-safe operations with TypeScript
+- Secure state management
+
+## 📊 Data Flow
+
+1. **Authentication**: User logs in → AuthContext stores user → Role-based redirect
+2. **Event Tracking**: User action → EventContext captures → localStorage persistence
+3. **Data Operations**: Component → dataService → localStorage → Update state
+4. **Journey View**: Admin requests → Filter events by user → Generate flow diagram
+
+## 🚧 Future Enhancements
+
+- [ ] Backend API integration
+- [ ] Real database (PostgreSQL/MongoDB)
+- [ ] Payment gateway integration
+- [ ] Email notifications
+- [ ] Product reviews and ratings
+- [ ] Advanced search and filters
+- [ ] Order tracking
+- [ ] Analytics dashboard
+- [ ] Export capabilities (CSV/PDF)
+- [ ] Multi-language support
+
+## 📝 License
+
+This project is open source and available under the MIT License.
+
+## 👨‍💻 Author
+
+**Saksham Kumar**
+- Email: saksham695@gmail.com
+- GitHub: [@saksham695](https://github.com/saksham695)
+
+## 🙏 Acknowledgments
+
+- React team for the amazing framework
+- React Flow for the visualization library
+- Create React App for the build setup
+
+---
+
+**Built with ❤️ using React and TypeScript**
