@@ -13,6 +13,19 @@ export interface User {
 }
 
 /**
+ * Product Review Interface
+ */
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId: string;
+  userName: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+}
+
+/**
  * Product Interface
  */
 export interface Product {
@@ -23,6 +36,8 @@ export interface Product {
   description: string;
   category: ProductCategory;
   price: number;
+  originalPrice?: number;
+  discount?: number;
   stock: number;
   images: string[];
   specifications: Record<string, string>;
@@ -32,6 +47,9 @@ export interface Product {
   warranty?: string;
   returnPolicy?: string;
   status: ProductStatus;
+  rating: number;
+  reviewCount: number;
+  views: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -103,6 +121,46 @@ export interface DashboardMetrics {
   activeBuyers: number;
   recentEvents: Event[];
 }
+
+/**
+ * Seller Analytics Interface
+ */
+export interface SellerAnalytics {
+  totalProducts: number;
+  totalSales: number;
+  totalRevenue: number;
+  averageRating: number;
+  totalReviews: number;
+  topSellingProducts: Product[];
+  recentOrders: Order[];
+  salesByCategory: Record<string, number>;
+  monthlyRevenue: { month: string; revenue: number }[];
+}
+
+/**
+ * Filter Options Interface
+ */
+export interface FilterOptions {
+  categories: ProductCategory[];
+  priceRange: { min: number; max: number };
+  rating: number;
+  inStock: boolean;
+}
+
+/**
+ * Sort Options Type
+ */
+export type SortOption = 
+  | 'newest'
+  | 'price-low-high'
+  | 'price-high-low'
+  | 'rating'
+  | 'popular';
+
+/**
+ * View Mode Type
+ */
+export type ViewMode = 'grid' | 'list';
 
 /**
  * User Journey Node for React Flow

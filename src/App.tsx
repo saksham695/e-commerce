@@ -1,21 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { EventProvider, useEvents } from './contexts/EventContext';
 import { UserRole, EventType } from './types/enums';
 import ProtectedRoute from './components/ProtectedRoute';
-
-// Pages
-import Login from './pages/Login/Login';
-import BuyerDashboard from './pages/Buyer/BuyerDashboard';
-import ProductDetail from './pages/Buyer/ProductDetail';
-import Cart from './pages/Buyer/Cart';
-import SellerDashboard from './pages/Seller/SellerDashboard';
-import ProductForm from './pages/Seller/ProductForm';
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import UserJourney from './pages/Admin/UserJourney';
+import ToastContainer from './components/Toast/Toast';
+import Skeleton from './components/Skeleton/Skeleton';
 
 import './App.css';
+
+// Lazy load pages for code splitting
+const Login = lazy(() => import('./pages/Login/Login'));
+const BuyerDashboard = lazy(() => import('./pages/Buyer/EnhancedBuyerDashboard'));
+const ProductDetail = lazy(() => import('./pages/Buyer/ProductDetail'));
+const Cart = lazy(() => import('./pages/Buyer/Cart'));
+const Wishlist = lazy(() => import('./pages/Buyer/Wishlist'));
+const SellerDashboard = lazy(() => import('./pages/Seller/SellerDashboard'));
+const ProductForm = lazy(() => import('./pages/Seller/ProductForm'));
+const AdminDashboard = lazy(() => import('./pages/Admin/AdminDashboard'));
+const UserJourney = lazy(() => import('./pages/Admin/UserJourney'));
+
+// Loading fallback component
+const PageLoader: React.FC = () => (
+  <div style={{ padding: '40px 20px', maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="loading-spinner" />
+  </div>
+);
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
@@ -28,9 +38,12 @@ const AppContent: React.FC = () => {
   }, [isAuthenticated, user]);
 
   return (
-    <Routes>
-      {/* Public Route */}
-      <Route
+    <>
+      <ToastContainer />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          {/* Public Route */}
+          <Route
         path="/"
         element={
           isAuthenticated ? (
@@ -64,14 +77,22 @@ const AppContent: React.FC = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/buyer/cart"
-        element={
-          <ProtectedRoute allowedRoles={[UserRole.BUYER_USER]}>
-            <Cart />
-          </ProtectedRoute>
-        }
-      />
+          <Route
+            path="/buyer/cart"
+            element={
+              <ProtectedRoute allowedRoles={[UserRole.BUYER_USER]}>
+                <Cart />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/buyer/wishlist"
+            element={
+              <ProtectedRoute allowedRoles={[UserRole.BUYER_USER]}>
+                <Wishlist />
+              </ProtectedRoute>
+            }
+          />
 
       {/* Seller Routes */}
       <Route
@@ -117,9 +138,11 @@ const AppContent: React.FC = () => {
         }
       />
 
-      {/* Catch all - redirect to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+          {/* Catch all - redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 };
 

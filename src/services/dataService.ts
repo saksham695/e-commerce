@@ -1,4 +1,4 @@
-import { Product, User, Order, CartItem } from '../types/interfaces';
+import { Product, User, Order, CartItem, ProductReview, SellerAnalytics } from '../types/interfaces';
 import { ProductCategory, ProductStatus, UserRole, OrderStatus } from '../types/enums';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,6 +12,7 @@ class DataService {
     products: 'products',
     users: 'users',
     orders: 'orders',
+    reviews: 'reviews',
   };
 
   // Initialize with mock data
@@ -32,6 +33,10 @@ class DataService {
 
     if (!localStorage.getItem(this.storageKeys.orders)) {
       localStorage.setItem(this.storageKeys.orders, JSON.stringify([]));
+    }
+
+    if (!localStorage.getItem(this.storageKeys.reviews)) {
+      localStorage.setItem(this.storageKeys.reviews, JSON.stringify([]));
     }
   }
 
@@ -77,6 +82,9 @@ class DataService {
         warranty: '1 Year',
         returnPolicy: '30 days return',
         status: ProductStatus.ACTIVE,
+        rating: Math.random() * 2 + 3, // Random rating between 3 and 5
+        reviewCount: Math.floor(Math.random() * 50) + 5,
+        views: Math.floor(Math.random() * 1000) + 100,
         createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
         updatedAt: new Date(),
       });
@@ -229,6 +237,111 @@ class DataService {
 
   getOrdersByBuyer(buyerId: string): Order[] {
     return this.getAllOrders().filter(o => o.buyerId === buyerId);
+  }
+
+  // Review Methods
+  getAllReviews(): ProductReview[] {
+    const reviews = localStorage.getItem(this.storageKeys.reviews);
+    if (!reviews) return [];
+    return JSON.parse(reviews).map((r: any) => ({
+      ...r,
+      createdAt: new Date(r.createdAt),
+    }));
+  }
+
+  getProductReviews(productId: string): ProductReview[] {
+    return this.getAllReviews().filter(r => r.productId === productId);
+  }
+
+  createReview(review: Omit<ProductReview, 'id' | 'createdAt'>): ProductReview {
+    const reviews = this.getAllReviews();
+    const newReview: ProductReview = {
+      ...review,
+      id: uuidv4(),
+      createdAt: new Date(),
+    };
+    reviews.push(newReview);
+    localStorage.setItem(this.storageKeys.reviews, JSON.stringify(reviews));
+
+    // Update product rating
+    this.updateProductRating(review.productId);
+    return newReview;
+  }
+
+  private updateProductRating(productId: string) {
+    const reviews = this.getProductReviews(productId);
+    if (reviews.length === 0) return;
+
+    const avgRating = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+    this.updateProduct(productId, {
+      rating: avgRating,
+      reviewCount: reviews.length,
+    });
+  }
+
+  // Analytics Methods
+  getSellerAnalytics(sellerId: string): SellerAnalytics {
+    const products = this.getProductsBySeller(sellerId);
+    const allOrders = this.getAllOrders();
+    
+    // Calculate sales and revenue
+    let totalSales = 0;
+    let totalRevenue = 0;
+    const recentOrders: Order[] = [];
+    
+    allOrders.forEach(order => {
+      order.items.forEach(item => {
+        if (item.product.sellerId === sellerId) {
+          totalSales += item.quantity;
+          totalRevenue += item.product.price * item.quantity;
+          if (!recentOrders.find(o => o.id === order.id)) {
+            recentOrders.push(order);
+          }
+        }
+      });
+    });
+
+    // Calculate average rating
+    const totalRating = products.reduce((sum, p) => sum + p.rating, 0);
+    const averageRating = products.length > 0 ? totalRating / products.length : 0;
+    const totalReviews = products.reduce((sum, p) => sum + p.reviewCount, 0);
+
+    // Top selling products
+    const topSellingProducts = [...products]
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 5);
+
+    // Sales by category
+    const salesByCategory: Record<string, number> = {};
+    products.forEach(product => {
+      salesByCategory[product.category] = (salesByCategory[product.category] || 0) + 1;
+    });
+
+    // Monthly revenue (mock data for last 6 months)
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const monthlyRevenue = monthNames.map(month => ({
+      month,
+      revenue: Math.random() * 10000 + 5000,
+    }));
+
+    return {
+      totalProducts: products.length,
+      totalSales,
+      totalRevenue,
+      averageRating,
+      totalReviews,
+      topSellingProducts,
+      recentOrders: recentOrders.slice(0, 10),
+      salesByCategory,
+      monthlyRevenue,
+    };
+  }
+
+  incrementProductViews(productId: string) {
+    const product = this.getProductById(productId);
+    if (product) {
+      this.updateProduct(productId, { views: (product.views || 0) + 1 });
+    }
   }
 }
 
