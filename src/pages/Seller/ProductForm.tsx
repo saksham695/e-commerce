@@ -169,6 +169,9 @@ const ProductForm: React.FC = () => {
         specifications: formData.specifications,
         sellerId: user.id,
         sellerName: user.name,
+        rating: 0,
+        reviewCount: 0,
+        views: 0,
       };
 
       if (isEditMode && productId) {
