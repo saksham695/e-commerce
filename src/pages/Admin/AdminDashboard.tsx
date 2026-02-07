@@ -215,28 +215,43 @@ const AdminDashboard: React.FC = () => {
             </div>
 
             <div className="events-section">
-              <h2>Recent Activity</h2>
+              <h2>All Activities ({recentEvents.length})</h2>
               {recentEvents.length === 0 ? (
                 <div className="no-events">No events recorded yet</div>
               ) : (
-                <div className="events-list">
-                  {recentEvents.map(event => (
-                    <div key={event.id} className="event-item">
-                      <div className="event-icon">{getEventIcon(event.eventType)}</div>
-                      <div className="event-details">
-                        <div className="event-title">
-                          <strong>{event.userName}</strong>
-                          <span className="event-type-badge">{event.userRole}</span>
-                        </div>
-                        <div className="event-description">
-                          {event.eventType.replace(/_/g, ' ').toLowerCase()}
-                        </div>
-                        <div className="event-timestamp">
-                          {formatTimestamp(event.timestamp)}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="activities-table-container">
+                  <table className="activities-table">
+                    <thead>
+                      <tr>
+                        <th>Time</th>
+                        <th>Event Type</th>
+                        <th>User</th>
+                        <th>Role</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentEvents.map(event => (
+                        <tr key={event.id}>
+                          <td className="time-cell">{formatTimestamp(event.timestamp)}</td>
+                          <td>
+                            <span className="event-type-badge-table">
+                              {getEventIcon(event.eventType)} {event.eventType.replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                          <td className="user-cell-table">
+                            <strong>{event.userName}</strong>
+                          </td>
+                          <td className="role-cell">{event.userRole}</td>
+                          <td className="details-cell">
+                            {event.metadata && Object.keys(event.metadata).length > 0 
+                              ? JSON.stringify(event.metadata) 
+                              : '-'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
             </div>
