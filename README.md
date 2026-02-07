@@ -4,6 +4,14 @@ A full-featured, production-ready e-commerce platform with role-based access con
 
 ## 🌟 Features
 
+### 🚀 **Modern React Practices**
+- **Custom Hooks**: useLocalStorage, useDebounce, useToast, useWishlist, useAsync
+- **Lazy Loading**: Code splitting for optimal performance
+- **Memoization**: useMemo and useCallback for optimization
+- **Toast Notifications**: Beautiful, auto-dismissing notifications
+- **Skeleton Loaders**: Smooth loading states
+- **TypeScript**: Strict typing throughout
+
 ### 🔐 **Role-Based Authentication**
 - **Three distinct user roles**: Admin, Seller, and Buyer
 - Secure login with role selection
@@ -13,13 +21,24 @@ A full-featured, production-ready e-commerce platform with role-based access con
 ### 👤 **User Panels**
 
 #### **Buyer Panel** 🛒
-- Browse all available products
-- Filter by category and search
-- View detailed product information
-- Add products to cart with quantity selection
-- Shopping cart management
-- Checkout with order placement
-- Real-time cart count tracking
+- **Product Browsing**:
+  - Grid/List view toggle
+  - Advanced filters (category, price range, ratings)
+  - Debounced search (300ms delay)
+  - Sort by newest, price, rating, popularity
+  - Skeleton loading states
+- **Product Features**:
+  - Star ratings and review counts
+  - Wishlist/Favorites with heart icons
+  - Product view tracking
+  - Discount badges
+  - Stock indicators
+- **Shopping Experience**:
+  - Add to cart with quantity selection
+  - Shopping cart management
+  - Checkout with order placement
+  - Real-time cart and wishlist counts
+  - Toast notifications for actions
 
 #### **Seller Panel** 📦
 - Dashboard with product statistics
@@ -59,13 +78,15 @@ A full-featured, production-ready e-commerce platform with role-based access con
 
 ## 🚀 Tech Stack
 
-- **Frontend**: React 18.2.0
-- **Language**: TypeScript 4.9.5
-- **Routing**: React Router DOM 6.x
-- **Visualization**: React Flow
-- **Styling**: CSS3 (Custom, no frameworks)
-- **State Management**: React Context API
-- **Build Tool**: Create React App
+- **Frontend**: React 18.2.0 with modern hooks
+- **Language**: TypeScript 4.9.5 (Strict mode)
+- **Routing**: React Router DOM 6.x with lazy loading
+- **Visualization**: React Flow for journey tracking
+- **Styling**: CSS3 (Custom, modern gradients)
+- **State Management**: React Context API + Custom Hooks
+- **Build Tool**: Create React App with code splitting
+- **Performance**: Memoization, debouncing, lazy loading
+- **UI Components**: Custom reusable components
 - **Version Control**: Git
 
 ## 📁 Project Structure
@@ -238,18 +259,35 @@ Admin can view any user's complete journey:
 3. **Data Operations**: Component → dataService → localStorage → Update state
 4. **Journey View**: Admin requests → Filter events by user → Generate flow diagram
 
+## ✅ Recently Added Features
+
+- [x] Custom React hooks for reusable logic
+- [x] Lazy loading and code splitting
+- [x] Toast notification system
+- [x] Skeleton loading states
+- [x] Wishlist/Favorites system
+- [x] Product ratings and reviews infrastructure
+- [x] Advanced filters (price, rating, category)
+- [x] Multiple sort options
+- [x] Grid/List view toggle
+- [x] Debounced search optimization
+- [x] Sales analytics for sellers
+- [x] Breadcrumb navigation
+
 ## 🚧 Future Enhancements
 
 - [ ] Backend API integration
 - [ ] Real database (PostgreSQL/MongoDB)
 - [ ] Payment gateway integration
 - [ ] Email notifications
-- [ ] Product reviews and ratings
-- [ ] Advanced search and filters
-- [ ] Order tracking
-- [ ] Analytics dashboard
+- [ ] Order tracking system
+- [ ] Recently viewed products
+- [ ] Product comparison
 - [ ] Export capabilities (CSV/PDF)
 - [ ] Multi-language support
+- [ ] Real-time notifications
+
+📖 **See [MODERN_FEATURES.md](./MODERN_FEATURES.md) for detailed comparison with Amazon, Shopify, and other e-commerce giants!**
 
 ## 📝 License
 
