@@ -57,15 +57,17 @@
 }
 
 .dropdown-item:hover {
-  background-color: #f8f9fa;
+  background-color: #f0f9ff;
+  color: var(--secondary-600);
 }
 
 .dropdown-item.danger {
-  color: #dc3545;
+  color: var(--danger-500);
 }
 
 .dropdown-item.danger:hover {
-  background-color: #fee;
+  background-color: var(--danger-100);
+  color: var(--danger-600);
 }
 
 .dropdown-icon {
