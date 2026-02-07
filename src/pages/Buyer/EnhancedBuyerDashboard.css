@@ -272,10 +272,10 @@
 }
 
 .category-btn-vertical.active {
-  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  background: white;
   color: var(--secondary-600);
   border-color: var(--secondary-500);
-  box-shadow: 0 0 0 1px var(--secondary-500);
+  border-width: 2px;
   font-weight: 600;
 }
 
