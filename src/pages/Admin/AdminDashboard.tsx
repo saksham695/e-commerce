@@ -5,6 +5,8 @@ import { useEvents } from '../../contexts/EventContext';
 import { EventType, UserRole } from '../../types/enums';
 import { User, Event } from '../../types/interfaces';
 import { dataService } from '../../services/dataService';
+import { useToast } from '../../hooks/useToast';
+import Dropdown from '../../components/Dropdown/Dropdown';
 import './AdminDashboard.css';
 
 const AdminDashboard: React.FC = () => {
@@ -23,6 +25,7 @@ const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { events, trackEvent } = useEvents();
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     trackEvent(EventType.VIEW_ADMIN_DASHBOARD);
@@ -68,6 +71,14 @@ const AdminDashboard: React.FC = () => {
     navigate('/');
   };
 
+  const handleViewProfile = () => {
+    toast.info('Profile page coming soon!');
+  };
+
+  const handleViewReports = () => {
+    toast.info('Reports page coming soon!');
+  };
+
   const formatTimestamp = (timestamp: Date) => {
     return new Date(timestamp).toLocaleString('en-US', {
       month: 'short',
@@ -102,13 +113,26 @@ const AdminDashboard: React.FC = () => {
         <div className="header-content">
           <h1>🎯 Admin Dashboard</h1>
           <div className="header-actions">
-            <div className="user-info">
-              <span className="user-name">{user?.name}</span>
-              <span className="user-role">Administrator</span>
-            </div>
-            <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
+            <Dropdown
+              align="right"
+              trigger={
+                <div className="user-dropdown-trigger-admin">
+                  <div className="user-avatar-admin">{user?.name.charAt(0).toUpperCase()}</div>
+                  <div className="user-info-dropdown-admin">
+                    <span className="user-name-dropdown-admin">{user?.name}</span>
+                    <span className="user-role-dropdown-admin">Administrator</span>
+                  </div>
+                  <span className="dropdown-arrow-admin">▼</span>
+                </div>
+              }
+              items={[
+                { label: 'View Profile', icon: '👤', onClick: handleViewProfile },
+                { label: 'User Management', icon: '👥', onClick: () => toast.info('User management coming soon!') },
+                { label: 'Reports', icon: '📈', onClick: handleViewReports },
+                { label: 'Settings', icon: '⚙️', onClick: () => toast.info('Settings page coming soon!') },
+                { label: 'Logout', icon: '🚪', onClick: handleLogout, danger: true },
+              ]}
+            />
           </div>
         </div>
       </header>

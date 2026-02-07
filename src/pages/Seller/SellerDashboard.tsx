@@ -5,6 +5,8 @@ import { useEvents } from '../../contexts/EventContext';
 import { Product } from '../../types/interfaces';
 import { EventType } from '../../types/enums';
 import { dataService } from '../../services/dataService';
+import { useToast } from '../../hooks/useToast';
+import Dropdown from '../../components/Dropdown/Dropdown';
 import './SellerDashboard.css';
 
 const SellerDashboard: React.FC = () => {
@@ -18,6 +20,7 @@ const SellerDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { trackEvent } = useEvents();
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     trackEvent(EventType.VIEW_SELLER_DASHBOARD);
@@ -61,19 +64,40 @@ const SellerDashboard: React.FC = () => {
     navigate('/');
   };
 
+  const handleViewProfile = () => {
+    toast.info('Profile page coming soon!');
+  };
+
+  const handleViewAnalytics = () => {
+    toast.info('Analytics page coming soon!');
+  };
+
   return (
     <div className="seller-dashboard">
       <header className="seller-header">
         <div className="header-content">
           <h1>📦 Seller Dashboard</h1>
           <div className="header-actions">
-            <div className="user-info">
-              <span className="user-name">{user?.name}</span>
-              <span className="user-role">Seller</span>
-            </div>
-            <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
+            <Dropdown
+              align="right"
+              trigger={
+                <div className="user-dropdown-trigger-seller">
+                  <div className="user-avatar-seller">{user?.name.charAt(0).toUpperCase()}</div>
+                  <div className="user-info-dropdown-seller">
+                    <span className="user-name-dropdown-seller">{user?.name}</span>
+                    <span className="user-role-dropdown-seller">Seller</span>
+                  </div>
+                  <span className="dropdown-arrow-seller">▼</span>
+                </div>
+              }
+              items={[
+                { label: 'View Profile', icon: '👤', onClick: handleViewProfile },
+                { label: 'My Products', icon: '📦', onClick: () => toast.info('You are already on products page!') },
+                { label: 'Analytics', icon: '📊', onClick: handleViewAnalytics },
+                { label: 'Settings', icon: '⚙️', onClick: () => toast.info('Settings page coming soon!') },
+                { label: 'Logout', icon: '🚪', onClick: handleLogout, danger: true },
+              ]}
+            />
           </div>
         </div>
       </header>
