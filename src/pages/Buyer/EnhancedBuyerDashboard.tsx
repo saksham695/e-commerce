@@ -10,6 +10,7 @@ import { ProductCategory, EventType } from '../../types/enums';
 import { dataService } from '../../services/dataService';
 import Rating from '../../components/Rating/Rating';
 import { ProductCardSkeleton } from '../../components/Skeleton/Skeleton';
+import Dropdown from '../../components/Dropdown/Dropdown';
 import './EnhancedBuyerDashboard.css';
 
 const EnhancedBuyerDashboard: React.FC = () => {
@@ -133,6 +134,29 @@ const EnhancedBuyerDashboard: React.FC = () => {
     navigate('/');
   };
 
+  const handleAddToCart = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    
+    const cart: any[] = JSON.parse(localStorage.getItem('cart') || '[]');
+    const existingItemIndex = cart.findIndex(item => item.product.id === product.id);
+
+    if (existingItemIndex > -1) {
+      cart[existingItemIndex].quantity += 1;
+      toast.success(`Added another ${product.name} to cart`);
+    } else {
+      cart.push({ product, quantity: 1 });
+      toast.success(`${product.name} added to cart`);
+    }
+
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+    trackEvent(EventType.ADD_TO_CART, { productId: product.id, quantity: 1 });
+  };
+
+  const handleViewProfile = () => {
+    toast.info('Profile page coming soon!');
+  };
+
   const clearFilters = () => {
     setSelectedCategory('all');
     setPriceRange({ min: 0, max: 1000 });
@@ -146,19 +170,52 @@ const EnhancedBuyerDashboard: React.FC = () => {
         <div className="header-content">
           <h1>🛍️ E-Commerce Store</h1>
           <div className="header-actions">
-            <button onClick={handleViewWishlist} className="wishlist-button">
-              ❤️ Wishlist ({wishlist.length})
+            <button onClick={handleViewWishlist} className="header-action-btn wishlist-btn">
+              <span className="btn-icon">❤️</span>
+              <span className="btn-text">Wishlist</span>
+              {wishlist.length > 0 && <span className="badge">{wishlist.length}</span>}
             </button>
-            <button onClick={handleViewCart} className="cart-button">
-              🛒 Cart ({cartCount})
+            <button onClick={handleViewCart} className="header-action-btn cart-btn">
+              <span className="btn-icon">🛒</span>
+              <span className="btn-text">Cart</span>
+              {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </button>
-            <div className="user-info">
-              <span className="user-name">{user?.name}</span>
-              <span className="user-role">Buyer</span>
-            </div>
-            <button onClick={handleLogout} className="logout-button">
-              Logout
-            </button>
+            <Dropdown
+              align="right"
+              trigger={
+                <div className="user-dropdown-trigger">
+                  <div className="user-avatar">{user?.name.charAt(0).toUpperCase()}</div>
+                  <div className="user-info-dropdown">
+                    <span className="user-name-dropdown">{user?.name}</span>
+                    <span className="user-role-dropdown">Buyer</span>
+                  </div>
+                  <span className="dropdown-arrow">▼</span>
+                </div>
+              }
+              items={[
+                {
+                  label: 'View Profile',
+                  icon: '👤',
+                  onClick: handleViewProfile,
+                },
+                {
+                  label: 'My Orders',
+                  icon: '📦',
+                  onClick: () => toast.info('Orders page coming soon!'),
+                },
+                {
+                  label: 'Settings',
+                  icon: '⚙️',
+                  onClick: () => toast.info('Settings page coming soon!'),
+                },
+                {
+                  label: 'Logout',
+                  icon: '🚪',
+                  onClick: handleLogout,
+                  danger: true,
+                },
+              ]}
+            />
           </div>
         </div>
       </header>
@@ -349,6 +406,15 @@ const EnhancedBuyerDashboard: React.FC = () => {
                         {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
                       </span>
                     </div>
+                    
+                    <button
+                      className="add-to-cart-btn-card"
+                      onClick={(e) => handleAddToCart(e, product)}
+                      disabled={product.stock === 0}
+                    >
+                      <span className="btn-icon-cart">🛒</span>
+                      <span>Add to Cart</span>
+                    </button>
                   </div>
                 </div>
               ))}

@@ -45,16 +45,16 @@ class DataService {
     const products: Product[] = [];
 
     const productTemplates = [
-      { name: 'Wireless Bluetooth Headphones', category: ProductCategory.ELECTRONICS, price: 89.99, brand: 'AudioTech' },
-      { name: 'Smart Watch Series 5', category: ProductCategory.ELECTRONICS, price: 299.99, brand: 'TechTime' },
-      { name: 'Premium Cotton T-Shirt', category: ProductCategory.CLOTHING, price: 24.99, brand: 'StyleCo' },
-      { name: 'Designer Jeans', category: ProductCategory.CLOTHING, price: 79.99, brand: 'DenimPro' },
-      { name: 'Organic Green Tea Pack', category: ProductCategory.FOOD, price: 12.99, brand: 'HealthyLeaf' },
-      { name: 'LED Desk Lamp', category: ProductCategory.HOME, price: 45.99, brand: 'BrightHome' },
-      { name: 'Fiction Bestseller Collection', category: ProductCategory.BOOKS, price: 34.99, brand: 'BookWorld' },
-      { name: 'Yoga Mat Premium', category: ProductCategory.SPORTS, price: 29.99, brand: 'FitLife' },
-      { name: 'Building Blocks Set', category: ProductCategory.TOYS, price: 49.99, brand: 'PlayFun' },
-      { name: 'Skincare Kit', category: ProductCategory.BEAUTY, price: 64.99, brand: 'GlowBeauty' },
+      { name: 'Wireless Bluetooth Headphones', category: ProductCategory.ELECTRONICS, price: 89.99, brand: 'AudioTech', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=300&fit=crop' },
+      { name: 'Smart Watch Series 5', category: ProductCategory.ELECTRONICS, price: 299.99, brand: 'TechTime', image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=300&fit=crop' },
+      { name: 'Premium Cotton T-Shirt', category: ProductCategory.CLOTHING, price: 24.99, brand: 'StyleCo', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop' },
+      { name: 'Designer Jeans', category: ProductCategory.CLOTHING, price: 79.99, brand: 'DenimPro', image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=300&fit=crop' },
+      { name: 'Organic Green Tea Pack', category: ProductCategory.FOOD, price: 12.99, brand: 'HealthyLeaf', image: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400&h=300&fit=crop' },
+      { name: 'LED Desk Lamp', category: ProductCategory.HOME, price: 45.99, brand: 'BrightHome', image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&h=300&fit=crop' },
+      { name: 'Fiction Bestseller Collection', category: ProductCategory.BOOKS, price: 34.99, brand: 'BookWorld', image: 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=300&fit=crop' },
+      { name: 'Yoga Mat Premium', category: ProductCategory.SPORTS, price: 29.99, brand: 'FitLife', image: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400&h=300&fit=crop' },
+      { name: 'Building Blocks Set', category: ProductCategory.TOYS, price: 49.99, brand: 'PlayFun', image: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&h=300&fit=crop' },
+      { name: 'Skincare Kit', category: ProductCategory.BEAUTY, price: 64.99, brand: 'GlowBeauty', image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=300&fit=crop' },
     ];
 
     productTemplates.forEach((template, index) => {
@@ -68,8 +68,8 @@ class DataService {
         price: template.price,
         stock: Math.floor(Math.random() * 100) + 20,
         images: [
-          `https://via.placeholder.com/400x300?text=${encodeURIComponent(template.name)}`,
-          `https://via.placeholder.com/400x300?text=${encodeURIComponent(template.name)}+2`,
+          template.image,
+          template.image,
         ],
         specifications: {
           'Material': 'Premium Quality',
