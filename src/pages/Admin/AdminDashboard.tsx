@@ -55,11 +55,11 @@ const AdminDashboard: React.FC = () => {
       totalEvents: events.length,
     });
 
-    // Get recent 10 events
-    const recent = [...events].sort((a, b) => 
+    // Get ALL events sorted by timestamp (newest first)
+    const allEvents = [...events].sort((a, b) => 
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    ).slice(0, 10);
-    setRecentEvents(recent);
+    );
+    setRecentEvents(allEvents);
   };
 
   const handleViewJourney = (userId: string) => {
