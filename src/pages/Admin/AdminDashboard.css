@@ -185,14 +185,15 @@
 
 .event-type-badge {
   display: inline-block;
-  padding: 3px 10px;
-  background-color: var(--secondary-500);
-  color: white;
-  border-radius: 12px;
-  font-size: 11px;
+  padding: 3px 8px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-radius: 4px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.5px;
+  border: 1px solid var(--border-medium);
 }
 
 .event-description {
@@ -237,7 +238,7 @@
 }
 
 .users-table tbody tr:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bg-tertiary);
 }
 
 .user-cell {
@@ -261,21 +262,21 @@
 }
 
 .journey-btn {
-  padding: 8px 16px;
-  background: var(--gradient-secondary);
-  color: white;
-  border: none;
+  padding: 7px 14px;
+  background-color: white;
+  color: var(--secondary-600);
+  border: 1px solid var(--secondary-500);
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 13px;
-  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  font-size: 12px;
 }
 
 .journey-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  background: var(--gradient-secondary);
+  color: white;
+  border-color: transparent;
 }
 
 /* Responsive Design */
