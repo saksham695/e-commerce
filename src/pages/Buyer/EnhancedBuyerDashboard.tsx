@@ -201,7 +201,7 @@ const EnhancedBuyerDashboard: React.FC = () => {
                 {
                   label: 'My Orders',
                   icon: '📦',
-                  onClick: () => toast.info('Orders page coming soon!'),
+                  onClick: () => navigate('/buyer/orders'),
                 },
                 {
                   label: 'Settings',

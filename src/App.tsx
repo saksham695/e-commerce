@@ -15,6 +15,7 @@ const BuyerDashboard = lazy(() => import('./pages/Buyer/EnhancedBuyerDashboard')
 const ProductDetail = lazy(() => import('./pages/Buyer/ProductDetail'));
 const Cart = lazy(() => import('./pages/Buyer/Cart'));
 const Wishlist = lazy(() => import('./pages/Buyer/Wishlist'));
+const Orders = lazy(() => import('./pages/Buyer/Orders'));
 const SellerDashboard = lazy(() => import('./pages/Seller/SellerDashboard'));
 const ProductForm = lazy(() => import('./pages/Seller/ProductForm'));
 const AdminDashboard = lazy(() => import('./pages/Admin/AdminDashboard'));
@@ -90,6 +91,14 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute allowedRoles={[UserRole.BUYER_USER]}>
                 <Wishlist />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/buyer/orders"
+            element={
+              <ProtectedRoute allowedRoles={[UserRole.BUYER_USER]}>
+                <Orders />
               </ProtectedRoute>
             }
           />
