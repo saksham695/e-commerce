@@ -149,8 +149,8 @@
 }
 
 .event-item:hover {
-  background-color: #e9ecef;
-  transform: translateX(5px);
+  background-color: var(--bg-tertiary);
+  border-left-color: var(--secondary-600);
 }
 
 .event-icon {
