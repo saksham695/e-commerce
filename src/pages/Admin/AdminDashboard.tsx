@@ -7,6 +7,7 @@ import { User, Event } from '../../types/interfaces';
 import { dataService } from '../../services/dataService';
 import { useToast } from '../../hooks/useToast';
 import Dropdown from '../../components/Dropdown/Dropdown';
+import FilterManagement from './FilterManagement';
 import './AdminDashboard.css';
 
 const AdminDashboard: React.FC = () => {
@@ -20,7 +21,7 @@ const AdminDashboard: React.FC = () => {
   const [recentEvents, setRecentEvents] = useState<Event[]>([]);
   const [sellers, setSellers] = useState<User[]>([]);
   const [buyers, setBuyers] = useState<User[]>([]);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'sellers' | 'buyers'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'sellers' | 'buyers' | 'filters'>('dashboard');
 
   const { user, logout } = useAuth();
   const { events, trackEvent } = useEvents();
@@ -167,6 +168,14 @@ const AdminDashboard: React.FC = () => {
             }}
           >
             🛍️ Buyers ({metrics.totalBuyers})
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'filters' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('filters');
+            }}
+          >
+            🔧 Filter Management
           </button>
         </div>
 
@@ -361,6 +370,8 @@ const AdminDashboard: React.FC = () => {
             )}
           </div>
         )}
+
+        {activeTab === 'filters' && <FilterManagement />}
       </div>
     </div>
   );
