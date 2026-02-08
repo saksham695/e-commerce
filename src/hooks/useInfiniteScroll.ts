@@ -6,7 +6,7 @@ interface UseInfiniteScrollOptions {
 }
 
 interface UseInfiniteScrollReturn {
-  sentinelRef: React.RefObject<HTMLDivElement>;
+  sentinelRef: React.RefObject<HTMLDivElement | null>;
   isLoadingMore: boolean;
 }
 
@@ -15,7 +15,7 @@ export const useInfiniteScroll = (
   hasMore: boolean,
   options: UseInfiniteScrollOptions = {}
 ): UseInfiniteScrollReturn => {
-  const { threshold = 100, rootMargin = '0px' } = options;
+  const { rootMargin = '0px' } = options;
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 

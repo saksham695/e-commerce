@@ -67,7 +67,7 @@ const Wishlist: React.FC = () => {
         const decodedWishlist = JSON.parse(atob(sharedData));
         const sharedProducts = decodedWishlist
           .map((id: string) => dataService.getProductById(id))
-          .filter((p): p is Product => p !== null);
+          .filter((p: Product | null): p is Product => p !== null);
         setWishlistProducts(sharedProducts);
         toast.info('Viewing a shared wishlist');
       } catch (e) {

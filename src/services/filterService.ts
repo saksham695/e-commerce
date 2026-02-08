@@ -166,7 +166,7 @@ class FilterService {
         return Object.values(ProductCategory).map(cat => ({ label: cat, value: cat }));
       
       case FilterDataSource.PRODUCT_BRAND:
-        const brands = [...new Set(products.map(p => p.brand))];
+        const brands = Array.from(new Set(products.map(p => p.brand)));
         return brands.map(brand => ({ label: brand, value: brand }));
       
       case FilterDataSource.CUSTOM:

@@ -7,7 +7,7 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { useToast } from '../../hooks/useToast';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { Product, SortOption, ViewMode } from '../../types/interfaces';
-import { ProductCategory, EventType } from '../../types/enums';
+import { EventType } from '../../types/enums';
 import { dataService } from '../../services/dataService';
 import Rating from '../../components/Rating/Rating';
 import { ProductCardSkeleton } from '../../components/Skeleton/Skeleton';

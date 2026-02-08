@@ -44,7 +44,7 @@ class DataService {
     const products: Product[] = [];
 
     // SELLER 1: TechGadgets Pro (Electronics & Tech Focus)
-    const seller1Products = [
+    const seller1Products: Array<{ name: string; category: ProductCategory; price: number; brand: string; specs: Record<string, string> }> = [
       { name: 'Wireless Bluetooth Headphones', category: ProductCategory.ELECTRONICS, price: 89.99, brand: 'AudioTech', specs: { 'Battery Life': '30 hours', 'Bluetooth': '5.0', 'Noise Cancelling': 'Yes' } },
       { name: 'Smart Watch Series 5', category: ProductCategory.ELECTRONICS, price: 299.99, brand: 'TechTime', specs: { 'Display': 'AMOLED', 'Water Resistance': 'IP68', 'Battery': '48 hours' } },
       { name: 'Wireless Gaming Mouse', category: ProductCategory.ELECTRONICS, price: 79.99, brand: 'GamePro', specs: { 'DPI': '16000', 'Battery': '70 hours', 'Buttons': '8' } },
@@ -72,7 +72,7 @@ class DataService {
     ];
 
     // SELLER 2: StyleHub Fashion (Fashion, Home & Lifestyle Focus)
-    const seller2Products = [
+    const seller2Products: Array<{ name: string; category: ProductCategory; price: number; brand: string; specs: Record<string, string> }> = [
       { name: 'Premium Cotton T-Shirt', category: ProductCategory.CLOTHING, price: 24.99, brand: 'StyleHub', specs: { 'Material': '100% Cotton', 'Fit': 'Regular', 'Care': 'Machine Wash' } },
       { name: 'Designer Jeans', category: ProductCategory.CLOTHING, price: 79.99, brand: 'DenimPro', specs: { 'Fit': 'Slim', 'Stretch': 'Yes', 'Rise': 'Mid' } },
       { name: 'Casual Sneakers', category: ProductCategory.CLOTHING, price: 89.99, brand: 'FootStyle', specs: { 'Material': 'Canvas', 'Sole': 'Rubber', 'Closure': 'Lace' } },

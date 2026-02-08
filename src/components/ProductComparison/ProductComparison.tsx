@@ -28,9 +28,9 @@ const ProductComparison: React.FC<ProductComparisonProps> = ({ products, onClose
     { label: 'Discount', getValue: (p) => p.discount || 0, type: 'number' },
     { label: 'Views', getValue: (p) => p.views, type: 'number' },
     { label: 'Brand', getValue: (p) => p.brand, type: 'text' },
-    { label: 'Warranty', getValue: (p) => p.warranty, type: 'text' },
-    { label: 'Weight', getValue: (p) => p.weight, type: 'text' },
-    { label: 'Return Policy', getValue: (p) => p.returnPolicy, type: 'text' },
+    { label: 'Warranty', getValue: (p) => p.warranty || 'N/A', type: 'text' },
+    { label: 'Weight', getValue: (p) => p.weight || 'N/A', type: 'text' },
+    { label: 'Return Policy', getValue: (p) => p.returnPolicy || 'N/A', type: 'text' },
   ];
 
   const getMaxValue = (field: ComparisonField): number => {
