@@ -1,0 +1,128 @@
+.dynamic-filter-section {
+  margin-bottom: 24px;
+}
+
+.dynamic-filter-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dynamic-filter-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dynamic-filter-select:hover,
+.dynamic-filter-select:focus {
+  border-color: var(--secondary-500);
+  outline: none;
+}
+
+/* Multi-Select */
+.multi-select-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.multi-select-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.multi-select-label:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--secondary-400);
+}
+
+.multi-select-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-500);
+}
+
+/* Range Filter */
+.range-filter {
+  width: 100%;
+}
+
+.range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.range-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: all 0.2s;
+}
+
+.range-input:hover,
+.range-input:focus {
+  border-color: var(--secondary-500);
+  outline: none;
+}
+
+.range-separator {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Rating Filter */
+.rating-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rating-filter-btn {
+  padding: 10px 16px;
+  border: 2px solid var(--border-light);
+  background: var(--bg-primary);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.rating-filter-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--secondary-400);
+}
+
+.rating-filter-btn.active {
+  background: var(--gradient-accent);
+  color: var(--text-inverse);
+  border-color: var(--accent-500);
+}

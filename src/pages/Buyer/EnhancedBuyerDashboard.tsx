@@ -13,6 +13,9 @@ import Rating from '../../components/Rating/Rating';
 import { ProductCardSkeleton } from '../../components/Skeleton/Skeleton';
 import Dropdown from '../../components/Dropdown/Dropdown';
 import ProductComparison from '../../components/ProductComparison/ProductComparison';
+import DynamicFilterRenderer from '../../components/DynamicFilterRenderer/DynamicFilterRenderer';
+import { filterService } from '../../services/filterService';
+import { DynamicFilter } from '../../types/filterTypes';
 import './EnhancedBuyerDashboard.css';
 
 const EnhancedBuyerDashboard: React.FC = () => {
@@ -20,9 +23,6 @@ const EnhancedBuyerDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearch = useDebounce(searchTerm, 300);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 1000 });
-  const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [cartCount, setCartCount] = useState(0);
@@ -31,6 +31,10 @@ const EnhancedBuyerDashboard: React.FC = () => {
   const [showComparison, setShowComparison] = useState(false);
   const [displayedCount, setDisplayedCount] = useState(12);
   const PRODUCTS_PER_PAGE = 12;
+  
+  // Dynamic filters
+  const [dynamicFilters, setDynamicFilters] = useState<DynamicFilter[]>([]);
+  const [filterValues, setFilterValues] = useState<Record<string, any>>({});
 
   const { user, logout } = useAuth();
   const { trackEvent } = useEvents();
@@ -42,8 +46,21 @@ const EnhancedBuyerDashboard: React.FC = () => {
     trackEvent(EventType.BROWSE_PRODUCTS);
     loadProducts();
     updateCartCount();
+    loadDynamicFilters();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const loadDynamicFilters = () => {
+    const filters = filterService.getActiveFilters();
+    setDynamicFilters(filters);
+    
+    // Initialize filter values
+    const initialValues: Record<string, any> = {};
+    filters.forEach(filter => {
+      initialValues[filter.id] = filter.defaultValue || null;
+    });
+    setFilterValues(initialValues);
+  };
 
   const loadProducts = async () => {
     setIsLoading(true);
@@ -64,12 +81,7 @@ const EnhancedBuyerDashboard: React.FC = () => {
   const filteredAndSortedProducts = useMemo(() => {
     let filtered = [...products];
 
-    // Category filter
-    if (selectedCategory !== 'all') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
-    }
-
-    // Search filter
+    // Search filter (always active)
     if (debouncedSearch) {
       filtered = filtered.filter(p =>
         p.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
@@ -78,13 +90,42 @@ const EnhancedBuyerDashboard: React.FC = () => {
       );
     }
 
-    // Price range filter
-    filtered = filtered.filter(p => p.price >= priceRange.min && p.price <= priceRange.max);
+    // Apply dynamic filters
+    dynamicFilters.forEach(filter => {
+      const value = filterValues[filter.id];
+      if (!value || !filter.productField) return;
 
-    // Rating filter
-    if (minRating > 0) {
-      filtered = filtered.filter(p => p.rating >= minRating);
-    }
+      const field = filter.productField as keyof Product;
+
+      switch (filter.type) {
+        case 'DROPDOWN':
+          if (value !== 'all') {
+            filtered = filtered.filter(p => p[field] === value);
+          }
+          break;
+
+        case 'MULTI_SELECT':
+          if (Array.isArray(value) && value.length > 0) {
+            filtered = filtered.filter(p => value.includes(p[field]));
+          }
+          break;
+
+        case 'RANGE':
+          if (value.min !== undefined && value.max !== undefined) {
+            filtered = filtered.filter(p => {
+              const fieldValue = Number(p[field]);
+              return fieldValue >= value.min && fieldValue <= value.max;
+            });
+          }
+          break;
+
+        case 'RATING':
+          if (value > 0) {
+            filtered = filtered.filter(p => Number(p[field]) >= value);
+          }
+          break;
+      }
+    });
 
     // Sorting
     switch (sortBy) {
@@ -107,7 +148,7 @@ const EnhancedBuyerDashboard: React.FC = () => {
     }
 
     return filtered;
-  }, [products, selectedCategory, debouncedSearch, priceRange, minRating, sortBy]);
+  }, [products, debouncedSearch, dynamicFilters, filterValues, sortBy]);
 
   const displayedProducts = useMemo(() => {
     return filteredAndSortedProducts.slice(0, displayedCount);
@@ -180,17 +221,19 @@ const EnhancedBuyerDashboard: React.FC = () => {
   };
 
   const clearFilters = () => {
-    setSelectedCategory('all');
-    setPriceRange({ min: 0, max: 1000 });
-    setMinRating(0);
     setSearchTerm('');
+    const initialValues: Record<string, any> = {};
+    dynamicFilters.forEach(filter => {
+      initialValues[filter.id] = filter.defaultValue || null;
+    });
+    setFilterValues(initialValues);
     setDisplayedCount(PRODUCTS_PER_PAGE);
   };
 
   // Reset displayed count when filters change
   useEffect(() => {
     setDisplayedCount(PRODUCTS_PER_PAGE);
-  }, [selectedCategory, debouncedSearch, priceRange, minRating, sortBy]);
+  }, [debouncedSearch, filterValues, sortBy]);
 
   const toggleComparisonMode = () => {
     setComparisonMode(!comparisonMode);
@@ -292,7 +335,7 @@ const EnhancedBuyerDashboard: React.FC = () => {
             <button onClick={clearFilters} className="clear-filters-btn">Clear All</button>
           </div>
 
-          {/* Search */}
+          {/* Search (Always visible) */}
           <div className="filter-section">
             <label className="filter-label">Search</label>
             <input
@@ -304,65 +347,21 @@ const EnhancedBuyerDashboard: React.FC = () => {
             />
           </div>
 
-          {/* Category Filter */}
-          <div className="filter-section">
-            <label className="filter-label">Category</label>
-            <div className="category-filters-vertical">
-              <button
-                className={`category-btn-vertical ${selectedCategory === 'all' ? 'active' : ''}`}
-                onClick={() => setSelectedCategory('all')}
-              >
-                All Products
-              </button>
-              {Object.values(ProductCategory).map(category => (
-                <button
-                  key={category}
-                  className={`category-btn-vertical ${selectedCategory === category ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Price Range Filter */}
-          <div className="filter-section">
-            <label className="filter-label">Price Range</label>
-            <div className="price-inputs">
-              <input
-                type="number"
-                value={priceRange.min}
-                onChange={(e) => setPriceRange({ ...priceRange, min: Number(e.target.value) })}
-                placeholder="Min"
-                className="price-input"
-              />
-              <span>-</span>
-              <input
-                type="number"
-                value={priceRange.max}
-                onChange={(e) => setPriceRange({ ...priceRange, max: Number(e.target.value) })}
-                placeholder="Max"
-                className="price-input"
-              />
-            </div>
-          </div>
-
-          {/* Rating Filter */}
-          <div className="filter-section">
-            <label className="filter-label">Minimum Rating</label>
-            <div className="rating-filters">
-              {[0, 3, 4, 4.5].map(rating => (
-                <button
-                  key={rating}
-                  className={`rating-filter-btn ${minRating === rating ? 'active' : ''}`}
-                  onClick={() => setMinRating(rating)}
-                >
-                  {rating === 0 ? 'All' : `${rating}+ ★`}
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Dynamic Filters */}
+          {dynamicFilters.map(filter => (
+            <DynamicFilterRenderer
+              key={filter.id}
+              filter={filter}
+              value={filterValues[filter.id]}
+              onChange={(value) => {
+                setFilterValues({
+                  ...filterValues,
+                  [filter.id]: value,
+                });
+              }}
+              options={filterService.getFilterOptions(filter, products)}
+            />
+          ))}
         </aside>
 
         {/* Main Content */}
