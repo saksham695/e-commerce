@@ -5,6 +5,7 @@ import { useEvents } from '../../contexts/EventContext';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useToast } from '../../hooks/useToast';
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { Product, SortOption, ViewMode } from '../../types/interfaces';
 import { ProductCategory, EventType } from '../../types/enums';
 import { dataService } from '../../services/dataService';
@@ -28,6 +29,8 @@ const EnhancedBuyerDashboard: React.FC = () => {
   const [comparisonMode, setComparisonMode] = useState(false);
   const [compareProducts, setCompareProducts] = useState<Product[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [displayedCount, setDisplayedCount] = useState(12);
+  const PRODUCTS_PER_PAGE = 12;
 
   const { user, logout } = useAuth();
   const { trackEvent } = useEvents();
@@ -106,6 +109,20 @@ const EnhancedBuyerDashboard: React.FC = () => {
     return filtered;
   }, [products, selectedCategory, debouncedSearch, priceRange, minRating, sortBy]);
 
+  const displayedProducts = useMemo(() => {
+    return filteredAndSortedProducts.slice(0, displayedCount);
+  }, [filteredAndSortedProducts, displayedCount]);
+
+  const hasMore = displayedCount < filteredAndSortedProducts.length;
+
+  const loadMore = () => {
+    if (hasMore && !isLoading) {
+      setDisplayedCount(prev => prev + PRODUCTS_PER_PAGE);
+    }
+  };
+
+  const { sentinelRef, isLoadingMore } = useInfiniteScroll(loadMore, hasMore);
+
   const handleProductClick = (productId: string) => {
     trackEvent(EventType.VIEW_PRODUCT_DETAILS, { productId });
     dataService.incrementProductViews(productId);
@@ -167,7 +184,13 @@ const EnhancedBuyerDashboard: React.FC = () => {
     setPriceRange({ min: 0, max: 1000 });
     setMinRating(0);
     setSearchTerm('');
+    setDisplayedCount(PRODUCTS_PER_PAGE);
   };
+
+  // Reset displayed count when filters change
+  useEffect(() => {
+    setDisplayedCount(PRODUCTS_PER_PAGE);
+  }, [selectedCategory, debouncedSearch, priceRange, minRating, sortBy]);
 
   const toggleComparisonMode = () => {
     setComparisonMode(!comparisonMode);
@@ -348,7 +371,7 @@ const EnhancedBuyerDashboard: React.FC = () => {
           <div className="products-toolbar">
             <div className="toolbar-left">
               <span className="results-count">
-                {filteredAndSortedProducts.length} Products
+                Showing {displayedProducts.length} of {filteredAndSortedProducts.length} Products
               </span>
               <button
                 className={`compare-mode-btn ${comparisonMode ? 'active' : ''}`}
@@ -405,8 +428,9 @@ const EnhancedBuyerDashboard: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className={`products-${viewMode}`}>
-              {filteredAndSortedProducts.map(product => {
+            <>
+              <div className={`products-${viewMode}`}>
+                {displayedProducts.map(product => {
                 const isSelectedForComparison = compareProducts.some(p => p.id === product.id);
                 
                 return (
@@ -481,8 +505,28 @@ const EnhancedBuyerDashboard: React.FC = () => {
                     </div>
                   </div>
                 );
-              })}
-            </div>
+                })}
+              </div>
+
+              {/* Infinite Scroll Sentinel */}
+              {hasMore && (
+                <div ref={sentinelRef} className="scroll-sentinel">
+                  {isLoadingMore && (
+                    <div className="loading-more">
+                      <div className="spinner"></div>
+                      <span>Loading more products...</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* End of Results */}
+              {!hasMore && displayedProducts.length > 0 && (
+                <div className="end-of-results">
+                  <span>🎉 You've seen all products!</span>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
