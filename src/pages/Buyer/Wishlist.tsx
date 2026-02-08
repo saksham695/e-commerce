@@ -9,6 +9,8 @@ import './Wishlist.css';
 
 const Wishlist: React.FC = () => {
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareLink, setShareLink] = useState('');
   const { wishlist, removeFromWishlist } = useWishlist();
   const toast = useToast();
   const navigate = useNavigate();
@@ -34,6 +36,47 @@ const Wishlist: React.FC = () => {
     navigate(`/buyer/product/${productId}`);
   };
 
+  const handleShareWishlist = () => {
+    if (wishlist.length === 0) {
+      toast.warning('Your wishlist is empty! Add some products first.');
+      return;
+    }
+
+    const encodedWishlist = btoa(JSON.stringify(wishlist));
+    const link = `${window.location.origin}/buyer/wishlist?shared=${encodedWishlist}`;
+    setShareLink(link);
+    setShowShareModal(true);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareLink).then(() => {
+      toast.success('Wishlist link copied to clipboard!');
+      setShowShareModal(false);
+    }).catch(() => {
+      toast.error('Failed to copy link');
+    });
+  };
+
+  // Check if viewing a shared wishlist
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sharedData = params.get('shared');
+    
+    if (sharedData) {
+      try {
+        const decodedWishlist = JSON.parse(atob(sharedData));
+        const sharedProducts = decodedWishlist
+          .map((id: string) => dataService.getProductById(id))
+          .filter((p): p is Product => p !== null);
+        setWishlistProducts(sharedProducts);
+        toast.info('Viewing a shared wishlist');
+      } catch (e) {
+        toast.error('Invalid wishlist link');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="wishlist-container">
       <button onClick={() => navigate('/buyer')} className="back-button">
@@ -41,8 +84,15 @@ const Wishlist: React.FC = () => {
       </button>
 
       <div className="wishlist-header">
-        <h1>My Wishlist</h1>
-        <p>{wishlistProducts.length} items</p>
+        <div>
+          <h1>My Wishlist</h1>
+          <p>{wishlistProducts.length} items</p>
+        </div>
+        {wishlistProducts.length > 0 && (
+          <button onClick={handleShareWishlist} className="share-wishlist-btn">
+            🔗 Share Wishlist
+          </button>
+        )}
       </div>
 
       {wishlistProducts.length === 0 ? (
@@ -98,6 +148,38 @@ const Wishlist: React.FC = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="share-modal-overlay" onClick={() => setShowShareModal(false)}>
+          <div className="share-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="share-modal-header">
+              <h2>Share Your Wishlist</h2>
+              <button onClick={() => setShowShareModal(false)} className="close-modal-btn">
+                ✕
+              </button>
+            </div>
+            <div className="share-modal-body">
+              <p>Copy this link to share your wishlist with friends and family:</p>
+              <div className="share-link-container">
+                <input
+                  type="text"
+                  value={shareLink}
+                  readOnly
+                  className="share-link-input"
+                />
+                <button onClick={handleCopyLink} className="copy-link-btn">
+                  📋 Copy
+                </button>
+              </div>
+              <div className="share-info">
+                <p>✨ Anyone with this link can view your wishlist</p>
+                <p>🔒 They won't be able to modify it</p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
