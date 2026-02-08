@@ -11,6 +11,7 @@ import { dataService } from '../../services/dataService';
 import Rating from '../../components/Rating/Rating';
 import { ProductCardSkeleton } from '../../components/Skeleton/Skeleton';
 import Dropdown from '../../components/Dropdown/Dropdown';
+import ProductComparison from '../../components/ProductComparison/ProductComparison';
 import './EnhancedBuyerDashboard.css';
 
 const EnhancedBuyerDashboard: React.FC = () => {
@@ -24,6 +25,9 @@ const EnhancedBuyerDashboard: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [cartCount, setCartCount] = useState(0);
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [compareProducts, setCompareProducts] = useState<Product[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
 
   const { user, logout } = useAuth();
   const { trackEvent } = useEvents();
@@ -163,6 +167,42 @@ const EnhancedBuyerDashboard: React.FC = () => {
     setPriceRange({ min: 0, max: 1000 });
     setMinRating(0);
     setSearchTerm('');
+  };
+
+  const toggleComparisonMode = () => {
+    setComparisonMode(!comparisonMode);
+    if (comparisonMode) {
+      setCompareProducts([]);
+    }
+  };
+
+  const handleCompareSelect = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation();
+    
+    const isSelected = compareProducts.some(p => p.id === product.id);
+    
+    if (isSelected) {
+      setCompareProducts(compareProducts.filter(p => p.id !== product.id));
+    } else {
+      if (compareProducts.length >= 4) {
+        toast.warning('You can compare up to 4 products at a time');
+        return;
+      }
+      setCompareProducts([...compareProducts, product]);
+    }
+  };
+
+  const handleShowComparison = () => {
+    if (compareProducts.length < 2) {
+      toast.warning('Please select at least 2 products to compare');
+      return;
+    }
+    setShowComparison(true);
+    trackEvent(EventType.BROWSE_PRODUCTS, { action: 'compare_products', count: compareProducts.length });
+  };
+
+  const handleCloseComparison = () => {
+    setShowComparison(false);
   };
 
   return (
@@ -310,6 +350,12 @@ const EnhancedBuyerDashboard: React.FC = () => {
               <span className="results-count">
                 {filteredAndSortedProducts.length} Products
               </span>
+              <button
+                className={`compare-mode-btn ${comparisonMode ? 'active' : ''}`}
+                onClick={toggleComparisonMode}
+              >
+                {comparisonMode ? '✕ Exit Compare' : '📊 Compare Products'}
+              </button>
             </div>
             <div className="toolbar-right">
               <div className="view-mode-toggle">
@@ -360,69 +406,104 @@ const EnhancedBuyerDashboard: React.FC = () => {
             </div>
           ) : (
             <div className={`products-${viewMode}`}>
-              {filteredAndSortedProducts.map(product => (
-                <div
-                  key={product.id}
-                  className={`product-card-${viewMode}`}
-                  onClick={() => handleProductClick(product.id)}
-                >
-                  <button
-                    className={`wishlist-icon ${isInWishlist(product.id) ? 'active' : ''}`}
-                    onClick={(e) => handleWishlistToggle(e, product.id)}
+              {filteredAndSortedProducts.map(product => {
+                const isSelectedForComparison = compareProducts.some(p => p.id === product.id);
+                
+                return (
+                  <div
+                    key={product.id}
+                    className={`product-card-${viewMode} ${isSelectedForComparison ? 'selected-for-comparison' : ''}`}
+                    onClick={() => !comparisonMode && handleProductClick(product.id)}
                   >
-                    {isInWishlist(product.id) ? '❤️' : '🤍'}
-                  </button>
-                  
-                  <div className="product-image-container">
-                    <img src={product.images[0]} alt={product.name} />
-                    {product.discount && (
-                      <span className="discount-badge">-{product.discount}%</span>
-                    )}
-                    <div className="product-badge-cat">{product.category}</div>
-                  </div>
-                  
-                  <div className="product-info-enhanced">
-                    <h3 className="product-name-enhanced">{product.name}</h3>
-                    <p className="product-brand-enhanced">{product.brand}</p>
-                    
-                    <div className="product-rating-section">
-                      <Rating value={product.rating} size="small" />
-                      <span className="review-count">({product.reviewCount})</span>
-                    </div>
-                    
-                    {viewMode === 'list' && (
-                      <p className="product-description-enhanced">
-                        {product.description.substring(0, 150)}...
-                      </p>
-                    )}
-                    
-                    <div className="product-footer-enhanced">
-                      <div className="price-section">
-                        <span className="product-price-enhanced">${product.price.toFixed(2)}</span>
-                        {product.originalPrice && (
-                          <span className="original-price">${product.originalPrice.toFixed(2)}</span>
-                        )}
+                    {comparisonMode && (
+                      <div className="comparison-checkbox" onClick={(e) => handleCompareSelect(e, product)}>
+                        <input
+                          type="checkbox"
+                          checked={isSelectedForComparison}
+                          readOnly
+                        />
+                        <span>Compare</span>
                       </div>
-                      <span className={`stock-badge-enhanced ${product.stock > 10 ? 'in-stock' : 'low-stock'}`}>
-                        {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-                      </span>
-                    </div>
+                    )}
                     
                     <button
-                      className="add-to-cart-btn-card"
-                      onClick={(e) => handleAddToCart(e, product)}
-                      disabled={product.stock === 0}
+                      className={`wishlist-icon ${isInWishlist(product.id) ? 'active' : ''}`}
+                      onClick={(e) => handleWishlistToggle(e, product.id)}
                     >
-                      <span className="btn-icon-cart">🛒</span>
-                      <span>Add to Cart</span>
+                      {isInWishlist(product.id) ? '❤️' : '🤍'}
                     </button>
+                    
+                    <div className="product-image-container">
+                      <img src={product.images[0]} alt={product.name} />
+                      {product.discount && (
+                        <span className="discount-badge">-{product.discount}%</span>
+                      )}
+                      <div className="product-badge-cat">{product.category}</div>
+                    </div>
+                    
+                    <div className="product-info-enhanced">
+                      <h3 className="product-name-enhanced">{product.name}</h3>
+                      <p className="product-brand-enhanced">{product.brand}</p>
+                      
+                      <div className="product-rating-section">
+                        <Rating value={product.rating} size="small" />
+                        <span className="review-count">({product.reviewCount})</span>
+                      </div>
+                      
+                      {viewMode === 'list' && (
+                        <p className="product-description-enhanced">
+                          {product.description.substring(0, 150)}...
+                        </p>
+                      )}
+                      
+                      <div className="product-footer-enhanced">
+                        <div className="price-section">
+                          <span className="product-price-enhanced">${product.price.toFixed(2)}</span>
+                          {product.originalPrice && (
+                            <span className="original-price">${product.originalPrice.toFixed(2)}</span>
+                          )}
+                        </div>
+                        <span className={`stock-badge-enhanced ${product.stock > 10 ? 'in-stock' : 'low-stock'}`}>
+                          {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                        </span>
+                      </div>
+                      
+                      {!comparisonMode && (
+                        <button
+                          className="add-to-cart-btn-card"
+                          onClick={(e) => handleAddToCart(e, product)}
+                          disabled={product.stock === 0}
+                        >
+                          <span className="btn-icon-cart">🛒</span>
+                          <span>Add to Cart</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
       </div>
+
+      {/* Floating Compare Button */}
+      {comparisonMode && compareProducts.length > 0 && (
+        <div className="floating-compare-bar">
+          <span className="compare-count">{compareProducts.length} products selected</span>
+          <button className="compare-now-btn" onClick={handleShowComparison}>
+            Compare Now
+          </button>
+          <button className="clear-comparison-btn" onClick={() => setCompareProducts([])}>
+            Clear
+          </button>
+        </div>
+      )}
+
+      {/* Comparison Modal */}
+      {showComparison && (
+        <ProductComparison products={compareProducts} onClose={handleCloseComparison} />
+      )}
     </div>
   );
 };
