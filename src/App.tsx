@@ -8,6 +8,9 @@ import ToastContainer from './components/Toast/Toast';
 
 import './App.css';
 
+// Import reset utility - available in console as window.resetMockData()
+import './utils/resetMockData';
+
 // Lazy load pages for code splitting
 const Login = lazy(() => import('./pages/Login/Login'));
 const BuyerDashboard = lazy(() => import('./pages/Buyer/EnhancedBuyerDashboard'));
