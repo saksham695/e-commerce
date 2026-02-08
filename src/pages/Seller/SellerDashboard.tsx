@@ -15,7 +15,11 @@ const SellerDashboard: React.FC = () => {
     totalProducts: 0,
     totalStock: 0,
     activeProducts: 0,
+    totalViews: 0,
+    averageRating: 0,
+    totalRevenue: 0,
   });
+  const [activeTab, setActiveTab] = useState<'products' | 'analytics'>('products');
 
   const { user, logout } = useAuth();
   const { trackEvent } = useEvents();
@@ -34,10 +38,15 @@ const SellerDashboard: React.FC = () => {
     const myProducts = dataService.getProductsBySeller(user.id);
     setProducts(myProducts);
 
+    const analytics = dataService.getSellerAnalytics(user.id);
+
     setStats({
       totalProducts: myProducts.length,
       totalStock: myProducts.reduce((sum, p) => sum + p.stock, 0),
       activeProducts: myProducts.filter(p => p.status === 'active').length,
+      totalViews: myProducts.reduce((sum, p) => sum + (p.views || 0), 0),
+      averageRating: analytics.averageRating,
+      totalRevenue: analytics.totalRevenue,
     });
   };
 
@@ -70,7 +79,21 @@ const SellerDashboard: React.FC = () => {
   };
 
   const handleViewAnalytics = () => {
-    toast.info('Analytics page coming soon!');
+    setActiveTab('analytics');
+  };
+
+  const getTopProducts = () => {
+    return [...products]
+      .sort((a, b) => (b.views || 0) - (a.views || 0))
+      .slice(0, 5);
+  };
+
+  const getProductsByCategory = () => {
+    const categoryMap: Record<string, number> = {};
+    products.forEach(p => {
+      categoryMap[p.category] = (categoryMap[p.category] || 0) + 1;
+    });
+    return Object.entries(categoryMap).map(([category, count]) => ({ category, count }));
   };
 
   return (
@@ -128,87 +151,248 @@ const SellerDashboard: React.FC = () => {
               <div className="stat-label">Total Stock</div>
             </div>
           </div>
-        </div>
 
-        <div className="products-section">
-          <div className="section-header">
-            <h2>My Products</h2>
-            <button onClick={handleCreateProduct} className="create-product-btn">
-              + Add New Product
-            </button>
+          <div className="stat-card">
+            <div className="stat-icon">👁️</div>
+            <div className="stat-info">
+              <div className="stat-value">{stats.totalViews.toLocaleString()}</div>
+              <div className="stat-label">Total Views</div>
+            </div>
           </div>
 
-          {products.length === 0 ? (
-            <div className="no-products-seller">
-              <div className="no-products-icon">📦</div>
-              <h3>No products yet</h3>
-              <p>Start by creating your first product</p>
-              <button onClick={handleCreateProduct} className="create-first-btn">
-                Create Product
+          <div className="stat-card">
+            <div className="stat-icon">⭐</div>
+            <div className="stat-info">
+              <div className="stat-value">{stats.averageRating.toFixed(1)}</div>
+              <div className="stat-label">Average Rating</div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon">💰</div>
+            <div className="stat-info">
+              <div className="stat-value">${stats.totalRevenue.toLocaleString()}</div>
+              <div className="stat-label">Total Revenue</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="dashboard-tabs">
+          <button
+            className={`tab-button ${activeTab === 'products' ? 'active' : ''}`}
+            onClick={() => setActiveTab('products')}
+          >
+            📦 My Products
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            📊 Analytics
+          </button>
+        </div>
+
+        {/* Products Tab */}
+        {activeTab === 'products' && (
+          <div className="products-section">
+            <div className="section-header">
+              <h2>My Products</h2>
+              <button onClick={handleCreateProduct} className="create-product-btn">
+                + Add New Product
               </button>
             </div>
-          ) : (
-            <div className="products-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {products.map(product => (
-                    <tr key={product.id}>
-                      <td>
-                        <div className="product-cell">
-                          <img src={product.images[0]} alt={product.name} className="product-thumb" />
-                          <div>
-                            <div className="product-name-table">{product.name}</div>
-                            <div className="product-brand-table">{product.brand}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="category-badge">{product.category}</span>
-                      </td>
-                      <td className="price-cell">${product.price.toFixed(2)}</td>
-                      <td>
-                        <span className={`stock-badge ${product.stock > 10 ? 'good' : 'low'}`}>
-                          {product.stock}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`status-badge ${product.status}`}>
-                          {product.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="action-buttons">
-                          <button
-                            onClick={() => handleEditProduct(product.id)}
-                            className="edit-btn"
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteProduct(product.id)}
-                            className="delete-btn"
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
+
+            {products.length === 0 ? (
+              <div className="no-products-seller">
+                <div className="no-products-icon">📦</div>
+                <h3>No products yet</h3>
+                <p>Start by creating your first product</p>
+                <button onClick={handleCreateProduct} className="create-first-btn">
+                  Create Product
+                </button>
+              </div>
+            ) : (
+              <div className="products-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Stock</th>
+                      <th>Views</th>
+                      <th>Rating</th>
+                      <th>Status</th>
+                      <th>Actions</th>
                     </tr>
+                  </thead>
+                  <tbody>
+                    {products.map(product => (
+                      <tr key={product.id}>
+                        <td>
+                          <div className="product-cell">
+                            <img src={product.images[0]} alt={product.name} className="product-thumb" />
+                            <div>
+                              <div className="product-name-table">{product.name}</div>
+                              <div className="product-brand-table">{product.brand}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="category-badge">{product.category}</span>
+                        </td>
+                        <td className="price-cell">${product.price.toFixed(2)}</td>
+                        <td>
+                          <span className={`stock-badge ${product.stock > 10 ? 'good' : 'low'}`}>
+                            {product.stock}
+                          </span>
+                        </td>
+                        <td className="views-cell">
+                          <span className="views-badge">👁️ {product.views || 0}</span>
+                        </td>
+                        <td className="rating-cell">
+                          <span className="rating-badge">⭐ {product.rating.toFixed(1)}</span>
+                        </td>
+                        <td>
+                          <span className={`status-badge ${product.status}`}>
+                            {product.status}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="action-buttons">
+                            <button
+                              onClick={() => handleEditProduct(product.id)}
+                              className="edit-btn"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteProduct(product.id)}
+                              className="delete-btn"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && (
+          <div className="analytics-section">
+            <h2>Product Performance Analytics</h2>
+
+            {/* Top Products */}
+            <div className="analytics-card">
+              <h3>🏆 Top 5 Products by Views</h3>
+              {getTopProducts().length === 0 ? (
+                <p className="no-data">No product data available</p>
+              ) : (
+                <div className="top-products-list">
+                  {getTopProducts().map((product, index) => (
+                    <div key={product.id} className="top-product-item">
+                      <div className="rank-badge">#{index + 1}</div>
+                      <img src={product.images[0]} alt={product.name} className="top-product-img" />
+                      <div className="top-product-info">
+                        <div className="top-product-name">{product.name}</div>
+                        <div className="top-product-stats">
+                          <span className="stat-item">👁️ {product.views || 0} views</span>
+                          <span className="stat-item">⭐ {product.rating.toFixed(1)}</span>
+                          <span className="stat-item">💰 ${product.price}</span>
+                        </div>
+                      </div>
+                      <div className="views-bar">
+                        <div
+                          className="views-bar-fill"
+                          style={{
+                            width: `${((product.views || 0) / Math.max(...products.map(p => p.views || 0))) * 100}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+
+            {/* Products by Category */}
+            <div className="analytics-card">
+              <h3>📊 Products by Category</h3>
+              <div className="category-distribution">
+                {getProductsByCategory().map(({ category, count }) => (
+                  <div key={category} className="category-stat-item">
+                    <div className="category-stat-label">{category}</div>
+                    <div className="category-stat-bar">
+                      <div
+                        className="category-stat-fill"
+                        style={{
+                          width: `${(count / products.length) * 100}%`,
+                        }}
+                      />
+                    </div>
+                    <div className="category-stat-count">{count} products</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* All Products Analytics Table */}
+            <div className="analytics-card">
+              <h3>📈 All Products Performance</h3>
+              <div className="products-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Views</th>
+                      <th>Rating</th>
+                      <th>Reviews</th>
+                      <th>Stock</th>
+                      <th>Revenue Potential</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[...products]
+                      .sort((a, b) => (b.views || 0) - (a.views || 0))
+                      .map(product => (
+                        <tr key={product.id}>
+                          <td>
+                            <div className="product-cell">
+                              <img src={product.images[0]} alt={product.name} className="product-thumb" />
+                              <div>
+                                <div className="product-name-table">{product.name}</div>
+                                <div className="product-brand-table">{product.brand}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="views-cell">
+                            <span className="views-badge-large">👁️ {(product.views || 0).toLocaleString()}</span>
+                          </td>
+                          <td className="rating-cell">
+                            <span className="rating-badge-large">⭐ {product.rating.toFixed(1)}</span>
+                          </td>
+                          <td className="reviews-cell">{product.reviewCount} reviews</td>
+                          <td>
+                            <span className={`stock-badge ${product.stock > 10 ? 'good' : 'low'}`}>
+                              {product.stock}
+                            </span>
+                          </td>
+                          <td className="price-cell">${(product.price * product.stock).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
